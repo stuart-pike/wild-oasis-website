@@ -1,8 +1,19 @@
 import { Suspense } from "react";
 import CabinList from "@/app/_components/CabinList";
 import Spinner from "@/app/_components/Spinner";
+import Filter from "@/app/_components/Filter";
 
-export default function Page() {
+// Revalidate to match how often data changes on db.
+export const revalidate = 3600 * 24;
+
+export const metadata = {
+  title: "Cabins",
+};
+
+// Use of searchParams means the page can no longer be statically rendered. This page will now be dynamically rendered making revalidate unneccasary. Each time the URL changes this server component will be rerendered.
+export default function Page({ searchParams }) {
+  console.log(searchParams);
+  const filter = searchParams?.capacity ?? "all";
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -16,8 +27,12 @@ export default function Page() {
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
-      <Suspense fallback={<Spinner />}>
-        <CabinList />
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+      {/* By default Suspense will not hide already already rendered content so a fallback like a spinner will not appear when navigating to another URL. To change this  we can pass in a unique key*/}
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );
