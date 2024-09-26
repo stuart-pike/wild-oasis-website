@@ -5,10 +5,6 @@ import { getCabin, getCabins } from "@/app/_lib/data-service";
 
 import { Suspense } from "react";
 
-// export const metadata = {
-//   title: "Cabin"
-// }
-
 export async function generateMetadata({ params }) {
   const { name } = await getCabin(params.cabinId);
   return { title: `Cabin ${name}` };
@@ -18,7 +14,7 @@ export async function generateMetadata({ params }) {
 export async function generateStaticParams() {
   const cabins = await getCabins();
   const ids = cabins.map((cabin) => ({ cabinId: String(cabin.id) }));
-  console.log(ids);
+  //console.log(ids);
   return ids;
 }
 
